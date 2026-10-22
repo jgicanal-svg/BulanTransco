@@ -1,0 +1,42 @@
+databases:
+  - name: bulan-db
+    plan: free
+    databaseName: bulan_transport_tracker
+
+services:
+  - type: web
+    name: bulan-transport-tracker
+    runtime: docker
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: Bulan Transport Tracker
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false          # paste your APP_KEY (base64:...) in the dashboard
+      - key: APP_URL
+        sync: false          # e.g. https://bulan-transport-tracker.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        fromDatabase:
+          name: bulan-db
+          property: connectionString
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: BROADCAST_CONNECTION
+        value: "null"        # app falls back to polling; see notes on Reverb
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: RUN_SEED
+        value: "true"        # first deploy only, then delete this var
